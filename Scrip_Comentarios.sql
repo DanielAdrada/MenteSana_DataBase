@@ -23,7 +23,9 @@ BEGIN
         e.est_apellido,
         p.per_foto_ruta,
         c.com_contenido,
-        c.com_fecha
+        c.com_fecha,
+        c.com_respuesta,
+    c.com_respuesta_fecha
     FROM tbl_comentarios c
     INNER JOIN tbl_usuarios u
         ON u.usu_id = c.com_usu_id
@@ -63,6 +65,20 @@ BEGIN
 END//
 DELIMITER ;
 
+
+-- UPDATE – Responder comentario
+DELIMITER //
+CREATE PROCEDURE proResponderComentario(
+    IN v_com_id INT,
+    IN v_respuesta TEXT
+)
+BEGIN
+    UPDATE tbl_comentarios
+    SET com_respuesta = v_respuesta,
+        com_respuesta_fecha = CURRENT_TIMESTAMP
+    WHERE com_id = v_com_id;
+END//
+DELIMITER ;
 
 
 
