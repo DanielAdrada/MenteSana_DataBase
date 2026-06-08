@@ -31,6 +31,8 @@ CREATE TABLE `tbl_comentarios` (
   `com_fecha` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `com_activo` tinyint(1) DEFAULT '1',
   `com_positivo` tinyint(1) DEFAULT '1',
+  `com_respuesta` text DEFAULT NULL,
+  `com_respuesta_fecha` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`com_id`),
   KEY `fk_comentario_usuario` (`com_usu_id`),
   CONSTRAINT `fk_comentario_usuario` FOREIGN KEY (`com_usu_id`) REFERENCES `tbl_usuarios` (`usu_id`)
@@ -43,7 +45,7 @@ CREATE TABLE `tbl_comentarios` (
 
 LOCK TABLES `tbl_comentarios` WRITE;
 /*!40000 ALTER TABLE `tbl_comentarios` DISABLE KEYS */;
-INSERT INTO `tbl_comentarios` VALUES (1,'098765','Me gusto muchooo','2026-01-08 22:38:04',1,1),(2,'1002862','Me senti muy bien','2026-01-09 02:34:12',1,1);
+INSERT INTO `tbl_comentarios` VALUES (1,'098765','Me gusto muchooo','2026-01-08 22:38:04',1,1,NULL,NULL),(2,'1002862','Me senti muy bien','2026-01-09 02:34:12',1,1,NULL,NULL);
 /*!40000 ALTER TABLE `tbl_comentarios` ENABLE KEYS */;
 UNLOCK TABLES;
 
