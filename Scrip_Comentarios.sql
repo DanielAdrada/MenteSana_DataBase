@@ -81,6 +81,41 @@ END//
 DELIMITER ;
 
 
+-- Activar comentario
+DELIMITER //
+CREATE PROCEDURE proActivarComentario(IN v_com_id INT)
+BEGIN
+    UPDATE tbl_comentarios
+    SET com_activo = TRUE
+    WHERE com_id = v_com_id;
+END//
+DELIMITER ;
 
 
+DELIMITER //
+
+CREATE PROCEDURE proGetComentariosPsicologo()
+BEGIN
+    SELECT
+        c.com_id,
+        c.com_activo,
+        u.usu_nombre_usuario,
+        e.est_nombre,
+        e.est_apellido,
+        p.per_foto_ruta,
+        c.com_contenido,
+        c.com_fecha,
+        c.com_respuesta,
+        c.com_respuesta_fecha
+    FROM tbl_comentarios c
+    INNER JOIN tbl_usuarios u
+        ON u.usu_id = c.com_usu_id
+    INNER JOIN tbl_estudiantes e
+        ON e.est_id = u.usu_id
+    LEFT JOIN tbl_perfil p
+        ON p.usu_id = u.usu_id
+    ORDER BY c.com_fecha DESC;
+END//
+
+DELIMITER ;
 
