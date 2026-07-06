@@ -10,12 +10,21 @@ DELIMITER ;
 
 -- READ – Login (validación)
 DELIMITER //
-CREATE PROCEDURE proLoginUsuario(IN v_nombre_usuario VARCHAR(50),IN v_contrasena TEXT)
+
+CREATE PROCEDURE proLoginUsuario(
+    IN v_nombre_usuario VARCHAR(50),
+    IN v_contrasena TEXT
+)
 BEGIN
-    SELECT usu_id, usu_rol FROM tbl_usuarios
+    SELECT
+        usu_id,
+        usu_nombre_usuario,
+        usu_rol
+    FROM tbl_usuarios
     WHERE usu_nombre_usuario = v_nombre_usuario
       AND usu_contrasena = v_contrasena;
 END//
+
 DELIMITER ;
 
 -- READ – Obtener usuario por ID
