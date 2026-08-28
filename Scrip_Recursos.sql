@@ -6,27 +6,77 @@ CREATE TABLE `mente_sana`.`tbl_recursos` (
   `rec_archivo` VARCHAR(500) NULL,
   `rec_url` VARCHAR(255) NULL,
   `rec_fecha` DATETIME NOT NULL,
-  PRIMARY KEY (`rec_id`));
+  `rec_psi_id` VARCHAR(20) NULL,
+  PRIMARY KEY (`rec_id`),
+  CONSTRAINT `fk_recursos_psicologo`
+    FOREIGN KEY (`rec_psi_id`)
+    REFERENCES `tbl_psicologos` (`psi_id`)
+);
 
 
 -- Gestion de recursos educativos CRUD
 -- INSERTAR 
 DELIMITER //
-CREATE PROCEDURE proInsertResource(IN p_titulo VARCHAR(100), IN p_descripcion TEXT, IN p_tipo VARCHAR(30), 
-IN p_archivo VARCHAR(500), IN p_url VARCHAR(255))
+
+CREATE PROCEDURE proInsertResource(
+    IN p_titulo VARCHAR(100),
+    IN p_descripcion TEXT,
+    IN p_tipo VARCHAR(30),
+    IN p_archivo VARCHAR(500),
+    IN p_url VARCHAR(255),
+    IN p_psi_id VARCHAR(20)
+)
 BEGIN
-    insert into tbl_recursos(rec_titulo, rec_descripcion, rec_tipo, rec_archivo, rec_url, rec_fecha) 
-    values(p_titulo, p_descripcion, p_tipo, p_archivo, p_url, NOW());
+
+    INSERT INTO tbl_recursos(
+        rec_titulo,
+        rec_descripcion,
+        rec_tipo,
+        rec_archivo,
+        rec_url,
+        rec_fecha,
+        rec_psi_id
+    )
+    VALUES(
+        p_titulo,
+        p_descripcion,
+        p_tipo,
+        p_archivo,
+        p_url,
+        NOW(),
+        p_psi_id
+    );
+
 END//
+
 DELIMITER ;
 
 -- SELECCIONAR 
 DELIMITER //
+
 CREATE PROCEDURE proSelectResource()
 BEGIN
-	select rec_id, rec_titulo, rec_descripcion, rec_tipo, rec_archivo, rec_url, rec_fecha
-    from tbl_recursos;
+
+    SELECT
+        r.rec_id,
+        r.rec_titulo,
+        r.rec_descripcion,
+        r.rec_tipo,
+        r.rec_archivo,
+        r.rec_url,
+        r.rec_fecha,
+        r.rec_psi_id,
+        p.psi_nombre,
+        p.psi_apellido
+    FROM tbl_recursos r
+
+    LEFT JOIN tbl_psicologos p
+        ON r.rec_psi_id = p.psi_id
+
+    ORDER BY r.rec_fecha DESC;
+
 END//
+
 DELIMITER ;
 
 -- ACTUALIZAR
