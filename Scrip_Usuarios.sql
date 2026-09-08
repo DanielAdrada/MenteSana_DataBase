@@ -1,11 +1,15 @@
 -- DDL Usurios
 -- CREATE – Registrar usuario
 DELIMITER //
-CREATE PROCEDURE proInsertUsuario(IN v_id VARCHAR(20), IN v_nombre_usuario VARCHAR(50), IN v_contrasena TEXT, IN v_salt TEXT, IN v_rol VARCHAR(45))
+
+CREATE PROCEDURE proInsertUsuario(IN v_id VARCHAR(20), IN v_nombre_usuario VARCHAR(50), IN v_correo VARCHAR(100), IN v_contrasena TEXT, IN v_salt TEXT, IN v_rol VARCHAR(45))
 BEGIN
-    INSERT INTO tbl_usuarios (usu_id,usu_nombre_usuario,usu_contrasena,usu_salt,usu_rol)
-    VALUES (v_id,v_nombre_usuario,v_contrasena,v_salt,v_rol);
+    INSERT INTO tbl_usuarios
+    (usu_id, usu_nombre_usuario, usu_correo, usu_contrasena, usu_salt, usu_rol)
+    VALUES
+    (v_id, v_nombre_usuario, v_correo, v_contrasena, v_salt, v_rol);
 END//
+
 DELIMITER ;
 
 -- READ – Login (validación)
