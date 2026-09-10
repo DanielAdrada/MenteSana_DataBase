@@ -1,12 +1,10 @@
+CREATE DATABASE  IF NOT EXISTS `mente_sana` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `mente_sana`;
 -- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: mente_sana
 -- ------------------------------------------------------
 -- Server version	8.1.0
-
-CREATE DATABASE  IF NOT EXISTS `mente_sana` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `mente_sana`;
-
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -38,7 +36,31 @@ CREATE TABLE `tbl_comentarios` (
   PRIMARY KEY (`com_id`),
   KEY `fk_comentario_usuario` (`com_usu_id`),
   CONSTRAINT `fk_comentario_usuario` FOREIGN KEY (`com_usu_id`) REFERENCES `tbl_usuarios` (`usu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tbl_estrategias`
+--
+
+DROP TABLE IF EXISTS `tbl_estrategias`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tbl_estrategias` (
+  `estrategia_id` int NOT NULL AUTO_INCREMENT,
+  `estrategia_dimension` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `estrategia_area` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `estrategia_nivel` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `estrategia_titulo` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `estrategia_descripcion` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `estrategia_activa` tinyint(1) NOT NULL DEFAULT '1',
+  `estrategia_usu_id` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `estrategia_fecha_creacion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `estrategia_fecha_actualizacion` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`estrategia_id`),
+  KEY `fk_estrategia_usuario` (`estrategia_usu_id`),
+  CONSTRAINT `fk_estrategia_usuario` FOREIGN KEY (`estrategia_usu_id`) REFERENCES `tbl_usuarios` (`usu_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=446 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -53,6 +75,9 @@ CREATE TABLE `tbl_estudiantes` (
   `est_nombre` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `est_apellido` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `est_estado` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ACTIVO',
+  `est_grado` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `est_curso` varchar(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `est_fecha_nacimiento` date DEFAULT NULL,
   PRIMARY KEY (`est_id`),
   CONSTRAINT `fk_est_usuario` FOREIGN KEY (`est_id`) REFERENCES `tbl_usuarios` (`usu_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -98,6 +123,25 @@ CREATE TABLE `tbl_psicologos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `tbl_recuperacion_contrasena`
+--
+
+DROP TABLE IF EXISTS `tbl_recuperacion_contrasena`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tbl_recuperacion_contrasena` (
+  `rec_id` int NOT NULL AUTO_INCREMENT,
+  `rec_usu_id` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `rec_token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `rec_fecha_expiracion` datetime NOT NULL,
+  `rec_usado` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`rec_id`),
+  KEY `fk_recuperacion_usuario` (`rec_usu_id`),
+  CONSTRAINT `fk_recuperacion_usuario` FOREIGN KEY (`rec_usu_id`) REFERENCES `tbl_usuarios` (`usu_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `tbl_recursos`
 --
 
@@ -120,6 +164,66 @@ CREATE TABLE `tbl_recursos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `tbl_respuestas_dass`
+--
+
+DROP TABLE IF EXISTS `tbl_respuestas_dass`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tbl_respuestas_dass` (
+  `respuesta_id` int NOT NULL AUTO_INCREMENT,
+  `respuesta_test_id` int NOT NULL,
+  `respuesta_pregunta` int NOT NULL,
+  `respuesta_valor` tinyint NOT NULL,
+  PRIMARY KEY (`respuesta_id`),
+  KEY `fk_respuesta_test` (`respuesta_test_id`),
+  CONSTRAINT `fk_respuesta_test` FOREIGN KEY (`respuesta_test_id`) REFERENCES `tbl_tests_dass` (`test_id`),
+  CONSTRAINT `chk_respuesta_pregunta` CHECK ((`respuesta_pregunta` between 1 and 42)),
+  CONSTRAINT `chk_respuesta_valor` CHECK ((`respuesta_valor` between 0 and 3))
+) ENGINE=InnoDB AUTO_INCREMENT=379 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tbl_test_estrategias`
+--
+
+DROP TABLE IF EXISTS `tbl_test_estrategias`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tbl_test_estrategias` (
+  `test_estrategia_id` int NOT NULL AUTO_INCREMENT,
+  `test_id` int NOT NULL,
+  `estrategia_id` int NOT NULL,
+  `fecha_asignacion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`test_estrategia_id`),
+  KEY `fk_test_estrategia_test` (`test_id`),
+  KEY `fk_test_estrategia_estrategia` (`estrategia_id`),
+  CONSTRAINT `fk_test_estrategia_estrategia` FOREIGN KEY (`estrategia_id`) REFERENCES `tbl_estrategias` (`estrategia_id`),
+  CONSTRAINT `fk_test_estrategia_test` FOREIGN KEY (`test_id`) REFERENCES `tbl_tests_dass` (`test_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tbl_tests_dass`
+--
+
+DROP TABLE IF EXISTS `tbl_tests_dass`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tbl_tests_dass` (
+  `test_id` int NOT NULL AUTO_INCREMENT,
+  `test_est_id` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `test_fecha` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `test_nivel_depresion` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `test_nivel_ansiedad` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `test_nivel_estres` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`test_id`),
+  KEY `fk_test_estudiante` (`test_est_id`),
+  CONSTRAINT `fk_test_estudiante` FOREIGN KEY (`test_est_id`) REFERENCES `tbl_estudiantes` (`est_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `tbl_usuarios`
 --
 
@@ -129,12 +233,14 @@ DROP TABLE IF EXISTS `tbl_usuarios`;
 CREATE TABLE `tbl_usuarios` (
   `usu_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `usu_nombre_usuario` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `usu_correo` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `usu_contrasena` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `usu_salt` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `usu_rol` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `usu_fecha_creacion` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`usu_id`),
-  UNIQUE KEY `usu_nombre_usuario` (`usu_nombre_usuario`)
+  UNIQUE KEY `usu_nombre_usuario` (`usu_nombre_usuario`),
+  UNIQUE KEY `uq_usuarios_correo` (`usu_correo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -286,6 +392,29 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `proEstadoEstrategia` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proEstadoEstrategia`(
+    IN p_estrategia_id INT,
+    IN p_activa TINYINT(1))
+BEGIN
+    UPDATE tbl_estrategias
+    SET estrategia_activa = p_activa
+    WHERE estrategia_id = p_estrategia_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `proGetComentarios` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -388,6 +517,37 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `proGetEstrategias` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proGetEstrategias`()
+BEGIN
+    SELECT
+        estrategia_id,
+        estrategia_dimension,
+        estrategia_area,
+        estrategia_nivel,
+        estrategia_titulo,
+        estrategia_descripcion,
+        estrategia_activa,
+        estrategia_usu_id,
+        estrategia_fecha_creacion,
+        estrategia_fecha_actualizacion
+    FROM tbl_estrategias
+    ORDER BY estrategia_fecha_creacion DESC;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `proGetEstudianteById` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -402,10 +562,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `proGetEstudianteById`(IN v_id VARCH
 BEGIN
     SELECT
         e.est_id,
-        u.usu_nombre_usuario,
         e.est_nombre,
         e.est_apellido,
-        e.est_estado
+        e.est_grado,
+        e.est_curso,
+        e.est_fecha_nacimiento,
+        e.est_estado,
+        u.usu_nombre_usuario
     FROM tbl_estudiantes e
     INNER JOIN tbl_usuarios u
         ON e.est_id = u.usu_id
@@ -499,6 +662,63 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `proGetRecuperacionValida` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proGetRecuperacionValida`(IN v_token VARCHAR(255))
+BEGIN
+    SELECT
+        rec_id,
+        rec_usu_id,
+        rec_token,
+        rec_fecha_expiracion,
+        rec_usado
+    FROM tbl_recuperacion_contrasena
+    WHERE rec_token = v_token
+      AND rec_usado = 0
+      AND rec_fecha_expiracion > NOW()
+    LIMIT 1;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `proGetUsuarioByCorreo` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proGetUsuarioByCorreo`(
+    IN v_correo VARCHAR(100)
+)
+BEGIN
+    SELECT
+        usu_id,
+        usu_nombre_usuario,
+        usu_correo,
+        usu_rol
+    FROM tbl_usuarios
+    WHERE usu_correo = v_correo
+    LIMIT 1;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `proGetUsuarioById` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -544,6 +764,48 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `proInsertEstrategia` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proInsertEstrategia`(
+    IN p_dimension VARCHAR(30),
+    IN p_area VARCHAR(50),
+    IN p_nivel VARCHAR(30),
+    IN p_titulo VARCHAR(150),
+    IN p_descripcion TEXT,
+    IN p_usu_id VARCHAR(20))
+BEGIN
+    INSERT INTO tbl_estrategias (
+        estrategia_dimension,
+        estrategia_area,
+        estrategia_nivel,
+        estrategia_titulo,
+        estrategia_descripcion,
+        estrategia_activa,
+        estrategia_usu_id)
+    VALUES (
+        p_dimension,
+        p_area,
+        p_nivel,
+        p_titulo,
+        p_descripcion,
+        1,
+        p_usu_id);
+
+    SELECT LAST_INSERT_ID();
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `proInsertEstudiante` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -554,10 +816,17 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `proInsertEstudiante`(IN v_id VARCHAR(20), IN v_nombre VARCHAR(50), IN v_apellido VARCHAR(50))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proInsertEstudiante`(IN v_id VARCHAR(20), IN v_nombre VARCHAR(50), IN v_apellido VARCHAR(50), IN v_grado VARCHAR(10), IN v_curso VARCHAR(5), IN v_fecha_nacimiento DATE)
 BEGIN
-    INSERT INTO tbl_estudiantes (est_id,est_nombre,est_apellido)
-    VALUES (v_id, v_nombre, v_apellido);
+    INSERT INTO tbl_estudiantes (est_id, est_nombre, est_apellido, est_grado, est_curso, est_fecha_nacimiento)
+    VALUES (
+        v_id,
+        v_nombre,
+        v_apellido,
+        v_grado,
+        v_curso,
+        v_fecha_nacimiento
+    );
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -616,6 +885,38 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `proInsertRecuperacion` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proInsertRecuperacion`(IN v_usu_id VARCHAR(20) ,IN v_token VARCHAR(255), IN v_fecha_expiracion DATETIME)
+BEGIN
+    INSERT INTO tbl_recuperacion_contrasena
+    (
+        rec_usu_id,
+        rec_token,
+        rec_fecha_expiracion,
+        rec_usado
+    )
+    VALUES
+    (
+        v_usu_id,
+        v_token,
+        v_fecha_expiracion,
+        0
+    );
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `proInsertResource` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -661,6 +962,94 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `proInsertRespuestaDASS` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proInsertRespuestaDASS`(
+    IN p_test_id INT,
+    IN p_numero_pregunta INT,
+    IN p_valor_respuesta TINYINT)
+BEGIN
+    INSERT INTO tbl_respuestas_dass (
+        respuesta_test_id,
+        respuesta_pregunta,
+        respuesta_valor)
+    VALUES (
+        p_test_id,
+        p_numero_pregunta,
+        p_valor_respuesta);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `proInsertTestDASS` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proInsertTestDASS`(
+    IN p_est_id VARCHAR(20),
+    IN p_nivel_depresion VARCHAR(50),
+    IN p_nivel_ansiedad VARCHAR(50),
+    IN p_nivel_estres VARCHAR(50))
+BEGIN
+    INSERT INTO tbl_tests_dass (
+        test_est_id,
+        test_nivel_depresion,
+        test_nivel_ansiedad,
+        test_nivel_estres)
+    VALUES (
+        p_est_id,
+        p_nivel_depresion,
+        p_nivel_ansiedad,
+        p_nivel_estres);
+    SELECT LAST_INSERT_ID() AS test_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `proInsertTestEstrategia` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proInsertTestEstrategia`(
+    IN p_test_id INT,
+    IN p_estrategia_id INT)
+BEGIN
+    INSERT INTO tbl_test_estrategias (
+        test_id,
+        estrategia_id)
+    VALUES (
+        p_test_id,
+        p_estrategia_id);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `proInsertUsuario` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -671,10 +1060,12 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `proInsertUsuario`(IN v_id VARCHAR(20), IN v_nombre_usuario VARCHAR(50), IN v_contrasena TEXT, IN v_salt TEXT, IN v_rol VARCHAR(45))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proInsertUsuario`(IN v_id VARCHAR(20), IN v_nombre_usuario VARCHAR(50), IN v_correo VARCHAR(100), IN v_contrasena TEXT, IN v_salt TEXT, IN v_rol VARCHAR(45))
 BEGIN
-    INSERT INTO tbl_usuarios (usu_id,usu_nombre_usuario,usu_contrasena,usu_salt,usu_rol)
-    VALUES (v_id,v_nombre_usuario,v_contrasena,v_salt,v_rol);
+    INSERT INTO tbl_usuarios
+    (usu_id, usu_nombre_usuario, usu_correo, usu_contrasena, usu_salt, usu_rol)
+    VALUES
+    (v_id, v_nombre_usuario, v_correo, v_contrasena, v_salt, v_rol);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -695,15 +1086,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `proListEstudiantes`()
 BEGIN
     SELECT
         e.est_id,
-        u.usu_nombre_usuario,
         e.est_nombre,
         e.est_apellido,
-        e.est_estado
+        e.est_grado,
+        e.est_curso,
+        e.est_fecha_nacimiento,
+        e.est_estado,
+        u.usu_nombre_usuario
     FROM tbl_estudiantes e
     INNER JOIN tbl_usuarios u
-        ON e.est_id = u.usu_id
-    WHERE u.usu_rol = 'ESTUDIANTE'
-    ORDER BY e.est_nombre, e.est_apellido;
+        ON e.est_id = u.usu_id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -760,6 +1152,29 @@ BEGIN
     FROM tbl_usuarios
     WHERE usu_nombre_usuario = v_nombre_usuario
       AND usu_contrasena = v_contrasena;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `proMarcarRecuperacionUsada` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proMarcarRecuperacionUsada`(
+    IN v_rec_id INT
+)
+BEGIN
+    UPDATE tbl_recuperacion_contrasena
+    SET rec_usado = 1
+    WHERE rec_id = v_rec_id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -852,6 +1267,38 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `proUpdateEstrategia` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proUpdateEstrategia`(
+    IN p_estrategia_id INT,
+    IN p_dimension VARCHAR(30),
+    IN p_area VARCHAR(50),
+    IN p_nivel VARCHAR(30),
+    IN p_titulo VARCHAR(150),
+    IN p_descripcion TEXT)
+BEGIN
+    UPDATE tbl_estrategias
+    SET
+        estrategia_dimension = p_dimension,
+        estrategia_area = p_area,
+        estrategia_nivel = p_nivel,
+        estrategia_titulo = p_titulo,
+        estrategia_descripcion = p_descripcion
+    WHERE estrategia_id = p_estrategia_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `proUpdateEstudiante` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -862,11 +1309,15 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `proUpdateEstudiante`(IN v_id VARCHAR(20), IN v_nombre VARCHAR(50), IN v_apellido VARCHAR(50))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proUpdateEstudiante`(IN v_id VARCHAR(20), IN v_nombre VARCHAR(50), IN v_apellido VARCHAR(50), IN v_grado VARCHAR(10), IN v_curso VARCHAR(5), IN v_fecha_nacimiento DATE)
 BEGIN
     UPDATE tbl_estudiantes
-    SET est_nombre = v_nombre,
-        est_apellido = v_apellido
+    SET
+        est_nombre = v_nombre,
+        est_apellido = v_apellido,
+        est_grado = v_grado,
+        est_curso = v_curso,
+        est_fecha_nacimiento = v_fecha_nacimiento
     WHERE est_id = v_id;
 END ;;
 DELIMITER ;
@@ -987,4 +1438,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-08-31 20:23:29
+-- Dump completed on 2026-09-09 22:33:06
