@@ -107,12 +107,24 @@ DELIMITER ;
 
 
 
-
-
-
-
-
-
+DELIMITER $$
+CREATE PROCEDURE proGetEstrategiasRecomendadas(
+    IN p_dimension VARCHAR(30),
+    IN p_nivel VARCHAR(30))
+BEGIN
+    SELECT
+        estrategia_id,
+        estrategia_dimension,
+        estrategia_nivel,
+        estrategia_titulo,
+        estrategia_descripcion
+    FROM tbl_estrategias
+    WHERE UPPER(TRIM(estrategia_dimension)) = UPPER(TRIM(p_dimension))
+      AND UPPER(TRIM(estrategia_nivel)) = UPPER(TRIM(p_nivel))
+      AND estrategia_activa = 1
+    ORDER BY RAND();
+END$$
+DELIMITER ;
 
 
 
