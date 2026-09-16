@@ -34,8 +34,6 @@ CREATE TABLE tbl_respuestas_dass (
 );
 
 
-
-
 DELIMITER $$
 CREATE PROCEDURE proInsertTestDASS(
     IN p_est_id VARCHAR(20),
@@ -58,7 +56,6 @@ END$$
 DELIMITER ;
 
 
-
 DELIMITER $$
 CREATE PROCEDURE proInsertRespuestaDASS(
     IN p_test_id INT,
@@ -74,5 +71,147 @@ BEGIN
         p_numero_pregunta,
         p_valor_respuesta);
 END$$
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE PROCEDURE proListTestsDASS()
+BEGIN
+    SELECT
+        t.test_id,
+        t.test_est_id,
+        CONCAT(e.est_nombre, ' ', e.est_apellido) AS estudiante,
+        CONCAT(e.est_grado, '-', e.est_curso) AS grado_curso,
+        t.test_nivel_depresion,
+        t.test_nivel_ansiedad,
+        t.test_nivel_estres,
+        t.test_fecha
+    FROM tbl_tests_dass t
+    INNER JOIN tbl_estudiantes e
+        ON t.test_est_id = e.est_id
+    ORDER BY t.test_fecha DESC;
+END$$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE PROCEDURE proGetRespuestasDASS(
+    IN p_test_id INT
+)
+BEGIN
+    SELECT
+        respuesta_pregunta,
+        respuesta_valor
+    FROM tbl_respuestas_dass
+    WHERE respuesta_test_id = p_test_id
+    ORDER BY respuesta_pregunta ASC;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE PROCEDURE proGetResumenDashboardDASS()
+BEGIN
+    SELECT
+        COUNT(DISTINCT test_est_id) AS total_estudiantes_evaluados,
+        COUNT(test_id) AS total_tests_realizados
+    FROM tbl_tests_dass;
+END$$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE PROCEDURE proGetEstadisticasDashboardDASS()
+BEGIN
+
+    SELECT
+        'Depresión' AS dimension,
+        test_nivel_depresion AS nivel,
+        COUNT(*) AS cantidad
+    FROM tbl_tests_dass
+    WHERE test_nivel_depresion IS NOT NULL
+    GROUP BY test_nivel_depresion
+
+    UNION ALL
+
+    SELECT
+        'Ansiedad' AS dimension,
+        test_nivel_ansiedad AS nivel,
+        COUNT(*) AS cantidad
+    FROM tbl_tests_dass
+    WHERE test_nivel_ansiedad IS NOT NULL
+    GROUP BY test_nivel_ansiedad
+
+    UNION ALL
+
+    SELECT
+        'Estrés' AS dimension,
+        test_nivel_estres AS nivel,
+        COUNT(*) AS cantidad
+    FROM tbl_tests_dass
+    WHERE test_nivel_estres IS NOT NULL
+    GROUP BY test_nivel_estres
+
+    ORDER BY dimension, cantidad DESC;
+
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE PROCEDURE proListUltimosTestsDASS()
+BEGIN
+    SELECT
+        t.test_id,
+        t.test_est_id,
+        CONCAT(e.est_nombre, ' ', e.est_apellido) AS estudiante,
+        CONCAT(e.est_grado, '-', e.est_curso) AS grado_curso,
+        t.test_nivel_depresion,
+        t.test_nivel_ansiedad,
+        t.test_nivel_estres,
+        t.test_fecha
+    FROM tbl_tests_dass t
+    INNER JOIN tbl_estudiantes e
+        ON t.test_est_id = e.est_id
+    WHERE t.test_id = (
+        SELECT t2.test_id
+        FROM tbl_tests_dass t2
+        WHERE t2.test_est_id = t.test_est_id
+        ORDER BY t2.test_fecha DESC, t2.test_id DESC
+        LIMIT 1
+    )
+    ORDER BY t.test_fecha DESC;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE PROCEDURE proGetTestDASSById(
+    IN p_test_id INT
+)
+BEGIN
+    SELECT
+        t.test_id,
+        t.test_est_id,
+        CONCAT(e.est_nombre, ' ', e.est_apellido) AS estudiante,
+        CONCAT(e.est_grado, '-', e.est_curso) AS grado_curso,
+        t.test_nivel_depresion,
+        t.test_nivel_ansiedad,
+        t.test_nivel_estres,
+        t.test_fecha
+    FROM tbl_tests_dass t
+    INNER JOIN tbl_estudiantes e
+        ON t.test_est_id = e.est_id
+    WHERE t.test_id = p_test_id;
+END$$
+
 DELIMITER ;
 
